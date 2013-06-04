@@ -226,35 +226,40 @@ bn.add_node(wet_grass)
 
 rows = bn.set_initial_weighting_count
 
-n_values = [10, 100, 500, 1000]
-n_values.each do |n_value|
-  puts "n = #{n_value}"
+n_value = ARGV[0] || 10
+n_value = n_value.to_i
 
-  count = 0
-  sum = [0,0]
-  sum_sqr = [0,0]
+puts "n = #{n_value}"
 
-  n_value.times do
-    post_prob = bn.likelihood_weighting("cloudy", {"sprinkler" => true, "wet_grass" => true}, n_value)
-    sum[0] += post_prob[0]
-    sum[1] += post_prob[1]
-    count += 1
+count = 0
+sum = [0,0]
+sum_sqr = [0,0]
+dot_count = 0
 
-    sum_sqr[0] += post_prob[0]*post_prob[0]
-    sum_sqr[1] += post_prob[1]*post_prob[1]
-  end
+1000.times do
+  print "." if dot_count % 10 == 0
+  dot_count += 1
 
-  avg = sum.map do |e|
-    (e.to_f / count).round(3)
-  end
-  puts "Average (true, false): #{avg.inspect}"
+  post_prob = bn.likelihood_weighting("cloudy", {"sprinkler" => true, "wet_grass" => true}, n_value)
+  sum[0] += post_prob[0]
+  sum[1] += post_prob[1]
+  count += 1
 
-  sum_sqr_i = -1
-  var = sum.map do |e|
-    sum_sqr_i += 1
-    ((sum_sqr[sum_sqr_i] - ((e*e)/count.to_f))/(count - 1)).round(4)
-  end
-  puts "Variance (true, false): #{var.inspect}"
+  sum_sqr[0] += post_prob[0]*post_prob[0]
+  sum_sqr[1] += post_prob[1]*post_prob[1]
 end
-#puts "post_prob"
-#puts post_prob.inspect
+puts ""
+
+avg = sum.map do |e|
+  (e.to_f / count).round(3)
+end
+puts "P ( Cloudy | Sprinkler = true, WetGrass = true )"
+puts "================================================"
+puts "Average (true, false): #{avg.inspect}"
+
+sum_sqr_i = -1
+var = sum.map do |e|
+  sum_sqr_i += 1
+  ((sum_sqr[sum_sqr_i] - ((e*e)/count.to_f))/(count - 1)).round(4)
+end
+puts "Variance (true, false): #{var.inspect}"
