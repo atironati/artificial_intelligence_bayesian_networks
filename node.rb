@@ -1,4 +1,4 @@
-
+# Represents a node in a bayesian network
 class Node
   attr_accessor :name, :value, :parents, :children, :prob_table
 
