@@ -4,7 +4,9 @@ class Node
 
   def initialize(name)
     @name = name
-    prob_table = Hash.new([])
+    @children = []
+    @parents = []
+    @prob_table = Hash.new([])
   end
 
   def add_child(target_node)
@@ -12,12 +14,7 @@ class Node
     target_node.parents << self
   end
 
-  def set_prob_table(nodes, probs)
-    index = 0
-
-    nodes.each do |node|
-      prob_table[node.name] << probs.slice(index,2)
-      index += 2
-    end
+  def set_prob_table(prob_table)
+    @prob_table = prob_table
   end
 end
