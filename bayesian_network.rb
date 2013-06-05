@@ -7,6 +7,9 @@ class BayesianNetwork
 
   def initialize
     @nodes = []
+    # represented as a hash with each key being another hash composed
+    # of truth assignments to node names from this network:
+    # {{node_1 => true, ... , node_n => true} => count, ... , ... }
     @weighted_counts = Hash.new(0)
   end
 
@@ -226,8 +229,8 @@ wet_grass.set_prob_table({{"sprinkler" => true,  "rain" => true,  "wet_grass" =>
                           {"sprinkler" => true,  "rain" => false, "wet_grass" => false} => 0.10,
                           {"sprinkler" => false, "rain" => true,  "wet_grass" => false} => 0.90,
                           {"sprinkler" => false, "rain" => true,  "wet_grass" => true}  => 0.10,
-                          {"sprinkler" => false, "rain" => false, "wet_grass" => false} => 0.00,
-                          {"sprinkler" => false, "rain" => false, "wet_grass" => true}  => 1.00})
+                          {"sprinkler" => false, "rain" => false, "wet_grass" => false} => 0.01,
+                          {"sprinkler" => false, "rain" => false, "wet_grass" => true}  => 0.99})
 # -------------------------------------------------------------------------
 
 # add nodes to the Baye's net
@@ -273,7 +276,7 @@ puts "================================================"
 
 # compute avg
 avg = sum.map do |e|
-  (e.to_f / count).round(3)
+  (e.to_f / count).round(4)
 end
 puts "Average (true, false): #{avg.inspect}"
 
@@ -281,6 +284,6 @@ puts "Average (true, false): #{avg.inspect}"
 sum_sqr_i = -1
 var = sum.map do |e|
   sum_sqr_i += 1
-  ((sum_sqr[sum_sqr_i] - ((e*e)/count.to_f))/(count - 1)).round(4)
+  ((sum_sqr[sum_sqr_i] - ((e*e)/count.to_f))/(count - 1)).round(6)
 end
 puts "Variance (true, false): #{var.inspect}"
